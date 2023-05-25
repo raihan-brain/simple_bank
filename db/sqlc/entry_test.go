@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -62,4 +63,38 @@ func TestListEntry(t *testing.T) {
 	for _, entry := range entries {
 		require.NotEmpty(t, entry)
 	}
+}
+
+func TestDeleteEntry(t *testing.T) {
+	entry := createRandomEntry(t)
+
+	err := testQueries.DeleteEntry(context.Background(), entry.ID)
+
+	require.NoError(t, err)
+
+	entry2, err := testQueries.GetEntry(context.Background(), entry.ID)
+
+	require.Error(t, err)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
+	require.Empty(t, entry2)
+}
+
+func TestUpdateEntry(t *testing.T) {
+	entry := createRandomEntry(t)
+
+	arg := UpdateEntryParams{
+		entry.ID,
+		util.RandomMoney(),
+		entry.AccountID,
+	}
+
+	updatedEntry, err := testQueries.UpdateEntry(context.Background(), arg)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, updatedEntry)
+	require.Equal(t, entry.ID, updatedEntry.ID)
+	require.Equal(t, entry.AccountID, updatedEntry.AccountID)
+	require.NotEqual(t, entry.Amount, updatedEntry.Amount)
+	require.WithinDuration(t, entry.CreatedAt, updatedEntry.CreatedAt, time.Second)
+
 }
