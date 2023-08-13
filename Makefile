@@ -1,3 +1,6 @@
+startdocker:
+	docker start postgres12
+
 postgres:
 	docker run --name postgres12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine3.17
 
@@ -21,4 +24,4 @@ test:
 server:
 	go run main.go
 
-.PHONY: postgres createdb dropdb migrateup migratedown server test
+.PHONY: postgres createdb dropdb migrateup migratedown server test startdocker

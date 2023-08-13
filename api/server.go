@@ -11,14 +11,12 @@ type Server struct {
 	router *gin.Engine
 }
 
+var router = gin.Default()
+
 func NewServer(store *db.Store) *Server {
 	server := &Server{store: store}
-	router := gin.Default()
 
-	router.POST("/accounts", server.CreateAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccount)
-	router.PUT("/update-accounts", server.updateAccount)
+	getRoutes(server)
 
 	server.router = router
 	return server
@@ -30,4 +28,9 @@ func (server *Server) Start(address string) error {
 
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
+}
+
+func getRoutes(server *Server) {
+
+	addAccountRoutes(router, server)
 }

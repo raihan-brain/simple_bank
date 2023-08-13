@@ -10,6 +10,17 @@ import (
 	db "github.com/raihan-brain/simple-bank/db/sqlc"
 )
 
+func addAccountRoutes(rg *gin.Engine, server *Server) {
+	accounts := rg.Group("/accounts")
+	{
+		accounts.POST("/", server.CreateAccount)
+		accounts.GET("/:id", server.getAccount)
+		accounts.GET("/list", server.listAccount)
+		accounts.PUT("/update", server.updateAccount)
+
+	}
+}
+
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
@@ -96,7 +107,7 @@ func (server *Server) listAccount(ctx *gin.Context) {
 
 type updateAccountRequest struct {
 	ID      int64 `json:"id" binding:"required"`
-	Balance int64 `json:"balance" binding:"required,oneof=USD EUR"`
+	Balance int64 `json:"balance" binding:"required"`
 }
 
 func (server *Server) updateAccount(ctx *gin.Context) {
