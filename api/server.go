@@ -33,4 +33,5 @@ func errorResponse(err error) gin.H {
 func getRoutes(server *Server) {
 
 	addAccountRoutes(router, server)
+	addEntryRoutes(router, server)
 }
