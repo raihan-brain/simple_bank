@@ -17,7 +17,6 @@ func addAccountRoutes(rg *gin.Engine, server *Server) {
 		accounts.GET("/:id", server.getAccount)
 		accounts.GET("/list", server.listAccount)
 		accounts.PUT("/update", server.updateAccount)
-
 	}
 }
 
